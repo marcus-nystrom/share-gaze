@@ -1,0 +1,15 @@
+SETTING UP THE SERVER COMPUTER AS A TIME SERVER
+
+The server computer was setup as an NTP time server following the points below.
+The instructions were taken from {https://social.technet.microsoft.com/Forums/windowsserver/en-US/ffb1df0b-7c6e-4b2d-8fdf-b4ca0c014266/configuring-windows-7-as-an-ntp-server?forum=winserverPN
+ * In the 'Services' window(part of Administrative Tools) Stop the 'Windows Time' service if already running. The 'Startup Type' could be set as Manual or Automatic depending on the user needs.
+ * In the Registry Editor following changes to be made under the Key 
+
+	HKEY_LOCAL_MACHINE \SYSTEM\CurrentControlSet\
+						services\W32Time:
+	** Config -> AnnounceFlags = 5.
+	** HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\
+						services\W32Time\TimeProviders\
+											NtpServer -> Enabled = 1.
+
+ * Start the 'Windows Time' service in the  'Services' window(part of Administrative Tools).
