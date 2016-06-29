@@ -6,11 +6,11 @@ REMEMBER TO START TIME SERVER!
 """
 from __future__ import division
 import time
-import datetime
 import socket
 import CastThread
 import os
-from psychopy import visual, monitors, core, event
+from psychopy import visual, core, event
+import constants_wally
 
 
 
@@ -34,58 +34,39 @@ text =  visual.TextStim(win,text='',wrapWidth = 0.5,height = 0.1)
 my_ip = UDP_IP_LOCAL = socket.gethostbyname(socket.gethostname())
 
 
-eye_tracking = True
-server_control = True
-
-IP_prefix = '192.168.1.'
-UDP_IP_SEND =   IP_prefix+'255'
-
-UDP_PORT = 9090
-current_ip = UDP_IP_SEND
-
-# Reference timestamp
-IP_prefix = '192.168.1.'
-UDP_IP_SEND =   IP_prefix+'255'
-
-UDP_PORT = 9090
-current_ip = UDP_IP_SEND    
-    
-# Enter ip-addresses of computers you want to use
-ip_list = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
-#ip_list = [2,22]
-
-# Maximum allowed search time
-max_search_time = 60
+eye_tracking = constants_wally.EYE_TRACKING
+server_control = constants_wally.SERVER_CONTROL
 
 sock = create_broadcast_socket()
-sock.sendto('taskkill /im python.exe /f /t', (UDP_IP_SEND, UDP_PORT))
+sock.sendto('taskkill /im python.exe /f /t', (constants_wally.UDP_IP_SEND, constants_wally.UDP_PORT))
 time.sleep(1)
 
 # start eye tracker
-sock.sendto("C:\Program Files (x86)\SMI\RED-m Configuration Tool\iViewREDm-Client.exe", 
-            (UDP_IP_SEND, UDP_PORT))
-time.sleep(5)
+if eye_tracking:
+    sock.sendto("C:\Program Files (x86)\SMI\RED-m Configuration Tool\iViewREDm-Client.exe", 
+                (constants_wally.UDP_IP_SEND, constants_wally.UDP_PORT))
+    time.sleep(5)
 
 
 # Start script by broadcasting message
 call = ' '.join(['client_wally.py',str(int(eye_tracking)),str(int(server_control))])
-filename =  os.path.join('C:',os.sep,'Share','demo_shared_gaze',call)
+filename =  os.path.join(constants_wally.CLIENT_PATH,call)
 
 
-text.setText('Press any key to start scripts on clients: '+str(ip_list))
+text.setText('Press any key to start scripts on clients: '+str(constants_wally.CLIENTS))
 text.draw()
 win.flip()
 event.waitKeys()
 
-for i in ip_list:
+for i in constants_wally.CLIENTS:
     print('python '+filename)
-    sock.sendto('python '+filename, (IP_prefix+str(i), UDP_PORT))
+    sock.sendto('python '+filename, (constants_wally.IP_prefix+str(i), constants_wally.UDP_PORT))
 
 # Close broadcast socket and start multicast thread
 sock.close()
 #time.sleep(2)
 
-text.setText('Clients started: '+str(ip_list))
+text.setText('Clients started: '+str(constants_wally.CLIENTS))
 text.draw()
 win.flip()
 time.sleep(2)
@@ -93,6 +74,7 @@ time.sleep(2)
 if server_control:
     
     xyCasting = CastThread.MultiCast()
+    xyCasting.start()      
     
     # Tell the clients to start the calibration
     time.sleep(1)
@@ -105,12 +87,11 @@ if server_control:
         
 
         # Don't proceed until all the clients have reported that they're done!
-        ip_list_temp = ip_list[:]        
+        ip_list_temp = constants_wally.CLIENTS[:]        
         text.setText('Calibration in progress\n\n Remaining clients: '+str(ip_list_temp))
         text.draw()
         win.flip()        
         time.sleep(1)
-        xyCasting.start()      
         while ip_list_temp:
             allData = xyCasting.consumeAll()
             for data, addr, time_arrive in allData:
@@ -139,14 +120,13 @@ if server_control:
 
     
     # Wait for the clients to finish and store reaction times
-    ip_list_temp = ip_list[:]  
+    ip_list_temp = constants_wally.CLIENTS[:]  
     search_time = []       
     text.setText('Waiting for clients to finish\n\n Remaining clients: '+str(ip_list_temp))
     text.draw()
     win.flip()        
     time.sleep(1)    
     t0 = core.getTime()
-    print(ip_list)
     while ip_list_temp:
         allData = xyCasting.consumeAll()
         #print(allData)
@@ -161,10 +141,10 @@ if server_control:
                 win.flip()    
                 
         # Stop all clients if the maximum search time has been reached
-        if (core.getTime() - t0) >= max_search_time:
+        if (core.getTime() - t0) >= constants_wally.MAX_SEARCH_TIME:
             xyCasting.send('stop') 
             break
-        time.sleep(0.01)   
+        time.sleep(0.001)   
         
         # proceed also if 'q' is pressed
         k = event.getKeys(['q'])
@@ -173,6 +153,7 @@ if server_control:
             break
 
 # Close the multicast socket
+xyCasting.stop()
 xyCasting.clean_up() 
 
 text.setText('Done!')

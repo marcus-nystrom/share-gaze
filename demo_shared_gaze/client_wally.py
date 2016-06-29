@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 23 21:42:39 2014
-
-@author: marcus
-
-tests my_SDK_class
+Code to run a find Wally experiment.
 """
 
 #from psychopy import parallel, core
@@ -14,7 +10,7 @@ import CastThread
 import socket
 import numpy as np
 import sys, os
-
+import constants_wally # Imports variables from the constants_wally.py file.
 
 
 def main(argv):
@@ -31,7 +27,6 @@ def main(argv):
     eye_tracking   = False   # Use eye tracker of just simulate data
     server_control = False   # Controlled by server (or participant control)
     
-
     ## If any input parameters are given
     if len(argv) > 0:    
         eye_tracking   = int(argv[0]) == 1
@@ -39,15 +34,14 @@ def main(argv):
         server_control = int(argv[1]) == 1
         
     # Set up monitor
-    screenSize = [1680,1050]
-    mon = monitors.Monitor('testMonitor')
-    mon.setWidth(47)    # Width of screen (cm)
-    mon.setDistance(70) # Distance eye / monitor (cm) 
-    mon.setSizePix(screenSize)
+    mon = monitors.Monitor(constants_wally.PSYCHOPY_MONITOR_NAME)
+    mon.setWidth(constants_wally.SCREEN_WIDTH)    # Width of screen (cm)
+    mon.setDistance(constants_wally.SCREEN_EYE_DIST) # Distance eye / monitor (cm) 
+    mon.setSizePix(constants_wally.SCREEN_RES)
     
     #create a window to draw in
     scale_f_window = 1 # Make the PsychoPy window smaller than the screen?
-    win =   visual.Window(screenSize*scale_f_window,fullscr=False,allowGUI=False,color=(0,0,0), monitor=mon, units='deg',screen=0)
+    win =   visual.Window(constants_wally.SCREEN_RES*scale_f_window,fullscr=False,allowGUI=False,color=(0,0,0), monitor=mon, units='deg',screen=0)
     
     # An instruction text object
     instruction_text = visual.TextStim(win,text='',wrapWidth = 20,height = 0.5)
@@ -58,7 +52,7 @@ def main(argv):
     # Add the picture
     im_search = visual.ImageStim(win, image='wally_search.jpg')
     im_face = visual.ImageStim(win, image='wally_face.jpg')
-    wally_pos = (0.0,-9.5)
+    wally_pos = constants_wally.WALLY_POS
     
     # Multicast xy and Listen (UDP)
     my_ip  = socket.gethostbyname(socket.gethostname())
@@ -66,7 +60,7 @@ def main(argv):
     xyCasting.setReceiveOwn(receiveOwn = True)
     xyCasting.start()
     
-    # Each participant's dot shoudl havec a different color
+    # Each participant's dot should have a different color
     dot_color = []
     for i in range(26):
         dot_color.append(xyCasting.get26colors(int(i)))     

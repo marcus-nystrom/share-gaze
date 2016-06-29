@@ -1,37 +1,19 @@
-# Class to multicast (send and receive) eye gaze or simulated gaze in real time in a separate thread
-# and also to syncronize clocks and check time diffs against clients (initiated by teachers PC)
-# Clients may connect and disconnect to a session ad hock.
-# ==================================================================================================
-#
-# Usage Notes: See client_xyCastThread.py as a sample on how to use this class.
-#
-# Example Usage in short:
-#
-# import CastThread
-# etThread = CastThread.xEyeTrack()
-# dataMyET = etThread.receiveNoBlock()
-# multicastThread = CastThread.MultiCast()
-# multicastThread.send(data)
-# dataOtherET = multicastThread.receiveNoBlock()
-# #do something ...
-# multicastThread.stop()
-#
-# DC Server stuff (run from Teacher PC):
-# time_diff, ip = send_to_set_time(time2set)
-# run_time_check_loop
-#
-# 2012-04-17: v0.1: initial implementation
-# 2015-04-01: v1.0: full implementation tested
-# 2015-06-20: v1.1: time stamping using G_dll.dll
-# 2015-09-11: v1.2: removed G_dll.dll time stamping, using run method to read fast
-#
-# Started by Michael MacAskill <michael.macaskill@nzbri.org>
-# Changed by Henrik Garde, Humanities Lab, LU <henrik.garde@humlab.lu.se>
-#            Marcus Nystrom, Humanities Lab, LU  <marcus.nystrom@humlab.lu.se>
-#            Diederick Niehorster, Humanities Lab, LU  <diederick_c.niehorster@humlab.lu.se>
-# - incorporates code from IOhub written by Sol Simpson
+# -*- coding: utf-8 -*-
+"""
+Class to multicast (send and receive) eye gaze or simulated gaze in real time in a separate thread
+and also to syncronize clocks and check time diffs against clients (initiated by server PC)
+Clients may connect and disconnect to a session ad hock.
 
-import threading  # this class is a thread sub-class
+Written by Henrik Garde, Humanities Lab, LU <henrik.garde@humlab.lu.se>
+Marcus Nystrom, Humanities Lab, LU  <marcus.nystrom@humlab.lu.se>
+Diederick Niehorster, Humanities Lab, LU  <diederick_c.niehorster@humlab.lu.se>
+
+Incorporates code from IOhub written by Sol Simpson and a class written by
+Michael MacAskill <michael.macaskill@nzbri.org>.
+
+See client_xyCastThread.py as a sample on how to use this class.
+"""
+import threading  
 import socket
 import datetime
 import sys
@@ -45,8 +27,6 @@ col = (240,163,255),(0,117,220),(153,63,0),(76,0,92),(25,25,25),\
       (143,124,0),(157,204,0),(194,0,136),(0,51,128),(255,164,5),\
       (255,168,187),(66,102,0),(255,0,16),(94,241,242),(0,153,143),\
       (224,255,102),(116,10,255),(153,0,0),(255,255,128),(255,255,0),(255,80,5)
-
-
 
 # for timestamping. Don't use Unix epoch but something
 # recent so we have enough precision in the returned timestamp
