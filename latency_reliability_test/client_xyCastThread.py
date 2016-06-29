@@ -1,6 +1,5 @@
 """
- by Henrik Garde + Marcus Nystrom, Humanities Lab, LU, 2015  
- Some based on thread class by Michael MacAskill 2012 
+ by Henrik Garde, Marcus Nystrom & Diederick Niehorster, Humanities Lab, LU, 2015
  
  This script do xy-tracking in one thread and xy-casting (send+receive) 
  in another thread by using the  - uses the MultiCast and the xGazeCastThread class found in the
