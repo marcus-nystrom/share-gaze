@@ -9,6 +9,7 @@ The software is written in Python and PsychoPy, and has been tested on RED-m eye
 The software consists of two parts:
 
 1) latency_reliability_test: Evaluating the latency and reliability when sharing gaze data in real-time across multiple computers.
+
 2) demo_shared_gaze: A minimal working example to share and display gaze in real-time across multiple eye-trackers.
 
 
