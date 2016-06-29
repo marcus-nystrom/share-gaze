@@ -8,9 +8,11 @@ The software is intended to provide code and examples on how multiple eye-tracke
 The software is written in Python and PsychoPy, and has been tested on RED-m eye trackers from SensoMotoric Instruments (Teltow, Germany). 
 The software consists of two parts:
 
-1) latency_reliability_test: Evaluating the latency and reliability when sharing gaze data in real-time across multiple computers.
+1)  sync_clocks: Software to set the clock time and resolution on the client computers.
 
-2) demo_shared_gaze: A minimal working example to share and display gaze in real-time across multiple eye-trackers.
+2) latency_reliability_test: Evaluating the latency and reliability when sharing gaze data in real-time across multiple computers.
+
+3) demo_shared_gaze: A minimal working example to share and display gaze in real-time across multiple eye-trackers.
 
 
 
