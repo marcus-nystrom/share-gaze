@@ -1,5 +1,5 @@
 This software accompanies the paper
-Nyström, M., Niehorster, D. C., Cornelissen, T. & Garde, H. (in press), "Real-time sharing of gaze data between multiple eye
+Nyström, M., Niehorster, D. C., Cornelissen, T. & Garde, H. (2017), "Real-time sharing of gaze data between multiple eye
 trackers–evaluation, tools, and advice", Behavior Research Methods.
 Please cite it when using the code.
 
